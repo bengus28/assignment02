@@ -40,7 +40,7 @@ public class Lexicon implements ILexicon {
 
 	@Override
 	public Iterator iterator() {
-		// TODO Auto-generated method stub
+		// hey man
 		return null;
 	}
 
