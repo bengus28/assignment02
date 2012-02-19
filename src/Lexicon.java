@@ -1,13 +1,23 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Iterator;
-
+import java.util.Scanner;
 
 public class Lexicon implements ILexicon {
 
 	@Override
 	public void open(File filename) {
 		// TODO Auto-generated method stub
-
+		Scanner inFile;
+		try {
+			inFile = new Scanner(filename);
+		} catch (FileNotFoundException e) {
+			
+		}
+	}
+	
+	public void sort() {
+		
 	}
 
 	@Override
