@@ -1,5 +1,5 @@
    import java.util.Iterator;
-   import java.io.File;
+import java.io.File;
 
 /**
  * Defines operations on a lexicon - a collection of strings that 
@@ -10,6 +10,7 @@
  *	
  */
 	
+   @SuppressWarnings("rawtypes")
    public interface ILexicon extends Iterable
    {
    
