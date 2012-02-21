@@ -24,8 +24,8 @@ public class Dodgson {
 			printOutput += "\n\tEnd word: " + endWord;
 			// Print first n elements of each dictionary subgroup
 			int n = 10;
-			printOutput += "\n\tFirst " + n + " Words of same length from dict: ";
-			printOutput += "[";
+			printOutput += "\n\tFirst " + n + " words from dictionary of same length as word pair:";
+			printOutput += "\n\t\t[";
 			for (int i = 0; i < n; i++) {
 				printOutput += dictionary.get(i);
 				printOutput += i < (n - 1) ? ", " : "";
