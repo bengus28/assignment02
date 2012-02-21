@@ -23,7 +23,7 @@ public class Lexicon implements ILexicon {
 		}
 	}
 	
-	public void parseFullDictionary(ArrayList<Integer> wordLengths) {
+	public void parseDictionary(ArrayList<Integer> wordLengths) {
 		while (inFile.hasNext()) {
 			String word = inFile.nextLine();
 			int wordLength = word.length();
