@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.List;
 
 public class Dodgson {
@@ -37,5 +39,39 @@ public class Dodgson {
 		// End Print
 		
 		return null;
+	}
+	public String findUsingQueue (String[] wordPair, Lexicon lexicon)
+	{
+		String startWord = wordPair[FROM];
+		String endWord = wordPair[TO];
+		
+		Queue<String> words = new LinkedList<String>();
+		Queue<String> path = new LinkedList<String>();
+		ArrayList<String> searched = new ArrayList<String>();
+		words.add(startWord);
+		path.add("");
+		
+		while ( (words.peek() != endWord ) && (words != null))
+		{
+			String currentWord = words.poll();
+			String currentPath = path.poll();
+			List<String> oneOffCurrent = lexicon.wordsOneOff(currentWord);
+			
+			while (oneOffCurrent != null)
+			{
+				String current = oneOffCurrent.get(0);
+				
+				if (!searched.contains(current))
+				{
+					words.add(current);
+					searched.add(current);
+					path.add(currentPath + "," + currentWord);
+				}
+			}
+		}
+		if (words != null)
+			return path.poll() + "," + words.poll();
+		else
+			return null;
 	}
 }

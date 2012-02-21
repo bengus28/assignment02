@@ -34,7 +34,10 @@ public class Assign2 {
 		for (String[] wordPair : diller.getWordPairs()) {
 			dodgson.findPath(wordPair, lexicon);
 		}
-		
+		Dodgson dodgson2 = new Dodgson();
+		for (String[] wordPair : diller.getWordPairs()) {
+			System.out.print(dodgson2.findUsingQueue(wordPair, lexicon));
+		}		
 	}
 
 }
