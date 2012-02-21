@@ -1,10 +1,7 @@
 import java.util.ArrayList;
-<<<<<<< HEAD
 import java.util.HashMap;
-=======
 import java.util.LinkedList;
 import java.util.Queue;
->>>>>>> 6cb4067c3113618b32545237a380f61d701a8954
 import java.util.List;
 import java.util.Map;
 
