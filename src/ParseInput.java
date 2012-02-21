@@ -3,10 +3,11 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Diller {
+public class ParseInput {
 
 	/**
 	 * HashMap key - Integer value representing word length value - ArrayList
@@ -14,11 +15,11 @@ public class Diller {
 	 */
 	private Map<Integer, ArrayList<String[]>> words = new HashMap<Integer, ArrayList<String[]>>();
 
-	public Diller() {
+	public ParseInput() {
 
 	}
 
-	public Diller(File filename) {
+	public ParseInput(File filename) {
 		parse(filename);
 	}
 
@@ -52,8 +53,24 @@ public class Diller {
 
 	}
 	
-	public Map<Integer, ArrayList<String[]>> getWords() {
+	public Map<Integer, ArrayList<String[]>> getWordPairMap() {
 		return words;
+	}
+	
+	public List<String[]> getWordPairs() {
+		List<String[]> wordPairs = new ArrayList<String[]>();
+		for (Integer wordLength : words.keySet()) {
+			List<String[]> singleLengthWordPairs = words.get(wordLength);
+			for (String[] wordPair : singleLengthWordPairs) {
+				wordPairs.add(wordPair);
+			}
+		}
+		return wordPairs;
+	}
+	
+	public List<Integer> getWordLengths() {
+		List<Integer> wordLengths = new ArrayList<Integer>(words.keySet());
+		return wordLengths;
 	}
 
 	public String toString() {
@@ -64,19 +81,23 @@ public class Diller {
 				output += "\n\t";
 				output += key + " ";
 				
+				output += "{";
+				
 				// Without commas separating String[] arrays
 //				for (String[] wordPair : wordPairs) {
 //					output += Arrays.toString(wordPair);
 //				}
 				
 				// With commas separating String[] arrays
+
 				for (int i = 0; i < wordPairs.size(); i++) {
 					output += Arrays.toString(wordPairs.get(i));
 					if (i < (wordPairs.size() - 1)) {
 						output += ", ";
 					}
 				}
-	
+				
+				output += "}";
 			}
 		return output;
 	}

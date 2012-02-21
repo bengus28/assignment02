@@ -15,29 +15,28 @@ public class Assign2 {
 		File sowpodsFile = new File("sowpods.txt");
 		
 		
-		// Diller
-		Diller diller1 = new Diller(diller1File);
-		Map<Integer, ArrayList<String[]>> words1 = diller1.getWords();
-		System.out.println(diller1);
+		// ParseInput
+		ParseInput diller = new ParseInput(diller1File);
+		System.out.println(diller);
 		
 		
 		// Lexicon
-		Lexicon lexicon1 = new Lexicon();
-		lexicon1.open(sowpodsFile);
-		lexicon1.parseDictionary(new ArrayList<Integer>(words1.keySet()));
+		Lexicon lexicon = new Lexicon();
+		lexicon.open(sowpodsFile);
+		lexicon.sortDictionary(diller.getWordLengths());
+		System.out.println(lexicon);
+			
+		// Test some lexicon functionality
+		String testWord = "hello";
+		System.out.println("isWord(" + testWord + "): " + lexicon.isWord(testWord));
+		System.out.println("wordsOneOff(" + testWord + "): " + lexicon.wordsOneOff(testWord));
 		
-		Map<Integer, ArrayList<String>> dictionary1 = lexicon1.getSorted();
-		
-		System.out.println(lexicon1);
-
 		
 		// Dodgson
 		Dodgson dodgson = new Dodgson();
-		dodgson.findFromDiller(words1, dictionary1);
-		
-			// Alternatively
-			dodgson.findFromDiller(diller1.getWords(), lexicon1.getSorted());
-		
+		for (String[] wordPair : diller.getWordPairs()) {
+			dodgson.findPath(wordPair, lexicon);
+		}
 		
 	}
 

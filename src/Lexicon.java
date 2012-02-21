@@ -3,47 +3,64 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Lexicon implements ILexicon {
 
 	private Scanner inFile;
-	
+
+	private boolean isSorted = false;
+
+	// Unsorted dictionary
+	List<String> dictionary = new ArrayList<String>();
+
 	// Sorted dictionary
-	Map<Integer, ArrayList<String>> dictionary = new HashMap<Integer, ArrayList<String>>();
-	
+	Map<Integer, ArrayList<String>> sortedDictionary = new HashMap<Integer, ArrayList<String>>();
+
 	@Override
 	public void open(File filename) {
 		try {
 			inFile = new Scanner(filename);
+			while (inFile.hasNext())
+				dictionary.add(inFile.nextLine());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	public void parseDictionary(ArrayList<Integer> wordLengths) {
-		while (inFile.hasNext()) {
-			String word = inFile.nextLine();
+
+	public void sortDictionary(List<Integer> list) {
+		for (String word : dictionary) {
 			int wordLength = word.length();
-			
+
 			// Check to see if we care about this word
-			if (wordLengths.contains(wordLength)) {
-				
+			if (list.contains(wordLength)) {
+
 				// Check if wordLength key exists
-				if (dictionary.get(wordLength) == null) {
+				if (sortedDictionary.get(wordLength) == null) {
 					// Create new ArrayList of Strings with key wordLength
-					dictionary.put(wordLength, new ArrayList<String>()); 
+					sortedDictionary.put(wordLength, new ArrayList<String>());
 				}
-				
+
 				// Add value to list.
-				dictionary.get(wordLength).add(word); 
+				sortedDictionary.get(wordLength).add(word);
 			}
 		}
+		isSorted = true;
+	}
+
+	public Map<Integer, ArrayList<String>> getSorted() {
+		return sortedDictionary;
 	}
 	
-	public Map<Integer, ArrayList<String>> getSorted() {
+//	public List<String> getOneWordLength(int wordLength) {
+//		return sortedDictionary.get(wordLength);
+//	}
+
+	public List<String> getDictionary() {
 		return dictionary;
 	}
 
@@ -54,7 +71,8 @@ public class Lexicon implements ILexicon {
 
 	@Override
 	public boolean isWord(String str) {
-		// TODO Auto-generated method stub
+		if (dictionary.contains(str.toUpperCase()))
+			return true;
 		return false;
 	}
 
@@ -63,11 +81,27 @@ public class Lexicon implements ILexicon {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	 
-	public String[] oneOff(String searchTerm)
-	{
-		String[] results = null;
-		return results;
+
+	public List<String> wordsOneOff(String str) {
+		int wordLength = str.length();
+		String regex = generateRegex(str);
+		if (isSorted && sortedDictionary.get(wordLength) != null) {
+			return findMatchingWords(str, regex, sortedDictionary.get(wordLength));
+		}
+		return findMatchingWords(str, regex, dictionary);
+	}
+
+	public List<String> findMatchingWords(String originalWord, String regex, List<String> words) {
+		List<String> matchingWords = new ArrayList<String>();
+		for (String word : words) {
+			if (Pattern.matches(regex, word)) {
+				matchingWords.add(word);
+			}
+		}
+		// Remove original word from return
+		int originalWordIndex = matchingWords.indexOf(originalWord.toUpperCase());
+		matchingWords.remove(originalWordIndex);
+		return matchingWords;
 	}
 
 	@Override
@@ -75,16 +109,24 @@ public class Lexicon implements ILexicon {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	public String generateRegex(String str) {
+		StringBuilder sb = new StringBuilder("(");
+		for (int i = 1; i <= str.length(); i++)
+			sb.append(str.subSequence(0, i - 1)).append("[a-z]").append(str.subSequence(i, str.length())).append("|");
+		sb.replace(sb.length() - 1, sb.length(), ")");
+		System.out.println("Generated regex: " + sb);
+		return sb.toString().toUpperCase();
+	}
+
 	public String toString() {
-		int n = 10; // Number of items in each group to print
-		
-		String output = "Sowpods: (showing first " + n + " items for each word length)";
-		
-		for (Integer key : dictionary.keySet()) {
-			ArrayList<String> dictionarySubgroup = dictionary.get(key);
-			
-			output += "\n\t";
+		if (isSorted) {
+			int n = 10; // Number of items in each group to print
+			String output = "Sowpods: (showing first " + n + " items for each word length)";
+			for (Integer key : sortedDictionary.keySet()) {
+				ArrayList<String> dictionarySubgroup = sortedDictionary.get(key);
+
+				output += "\n\t";
 				output += key;
 				output += " [";
 				// Print first n elements of each dictionary subgroup
@@ -94,8 +136,10 @@ public class Lexicon implements ILexicon {
 				}
 				output += (n < dictionarySubgroup.size()) ? ", ..." : "";
 				output += "]";
+			}
+			return output;
 		}
-		return output;
+		return this.toString();
 	}
 
 }
