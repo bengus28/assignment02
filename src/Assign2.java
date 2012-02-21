@@ -15,8 +15,8 @@ public class Assign2 {
 	 */
 	public static void main(String[] args) {
 		
-		String diller = "/Users/adam/Documents/School/School 11-12 Spring/COMP 2210/projects/assignment02/diller1.txt";
-		String sowpods = "/Users/adam/Documents/School/School 11-12 Spring/COMP 2210/projects/assignment02/sowpods.txt";
+		String diller = "diller1.txt";
+		String sowpods = "sowpods.txt";
 		
 		// HashMap containing word lengths
 		Map<Integer, Boolean> wordLengths = new HashMap<Integer, Boolean>();
