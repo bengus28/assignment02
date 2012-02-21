@@ -54,7 +54,7 @@ public class Assign2 {
 		
 		Lexicon lexicon = new Lexicon();
 		lexicon.open(new File(sowpods));
-		lexicon.sort(wordLengths);
+		lexicon.parseFullDictionary(wordLengths);
 		
 		Map<Integer, ArrayList<String>> sorted = lexicon.getSorted();
 		

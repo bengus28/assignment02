@@ -10,7 +10,8 @@ public class Lexicon implements ILexicon {
 
 	private Scanner inFile;
 	
-	Map<Integer, ArrayList<String>> sorted = new HashMap<Integer, ArrayList<String>>();
+	// Sorted dictionary
+	Map<Integer, ArrayList<String>> dictionary = new HashMap<Integer, ArrayList<String>>();
 	
 	@Override
 	public void open(File filename) {
@@ -22,21 +23,21 @@ public class Lexicon implements ILexicon {
 		}
 	}
 	
-	public void sort(Map<Integer, Boolean> wordLengths) {
+	public void parseFullDictionary(Map<Integer, Boolean> wordLengths) {
 		while (inFile.hasNext()) {
 			String word = inFile.nextLine();
-			int length = word.length();
-			if (wordLengths.get(length) != null) {
-				if (sorted.get(length) == null) { //gets the value for an id)
-					sorted.put(length, new ArrayList<String>()); //no ArrayList assigned, create new ArrayList
+			int wordLength = word.length();
+			if (wordLengths.get(wordLength) != null) {
+				if (dictionary.get(wordLength) == null) { //gets the value for an id)
+					dictionary.put(wordLength, new ArrayList<String>()); //no ArrayList assigned, create new ArrayList
 				}
-					sorted.get(length).add(word); //adds value to list.
+					dictionary.get(wordLength).add(word); //adds value to list.
 			}
 		}
 	}
 	
 	public Map<Integer, ArrayList<String>> getSorted() {
-		return sorted;
+		return dictionary;
 	}
 
 	@Override
