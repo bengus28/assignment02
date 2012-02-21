@@ -1,11 +1,17 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Lexicon implements ILexicon {
 
 	private Scanner inFile;
+	
+	Map<Integer, ArrayList<String>> sorted = new HashMap<Integer, ArrayList<String>>();
+	
 	@Override
 	public void open(File filename) {
 		// TODO Auto-generated method stub
@@ -16,8 +22,21 @@ public class Lexicon implements ILexicon {
 		}
 	}
 	
-	public void sort() {
-		
+	public void sort(Map<Integer, Boolean> wordLengths) {
+		while (inFile.hasNext()) {
+			String word = inFile.nextLine();
+			int length = word.length();
+			if (wordLengths.get(length) != null) {
+				if (sorted.get(length) == null) { //gets the value for an id)
+					sorted.put(length, new ArrayList<String>()); //no ArrayList assigned, create new ArrayList
+				}
+					sorted.get(length).add(word); //adds value to list.
+			}
+		}
+	}
+	
+	public Map<Integer, ArrayList<String>> getSorted() {
+		return sorted;
 	}
 
 	@Override
@@ -46,7 +65,7 @@ public class Lexicon implements ILexicon {
 
 	@Override
 	public Iterator iterator() {
-		// hey man
+		// TODO Auto-generated method stub
 		return null;
 	}
 

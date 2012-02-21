@@ -2,3 +2,5 @@ head tail
 door lock
 bank loan
 clash clown
+to do
+dog cat
