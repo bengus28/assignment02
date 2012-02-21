@@ -104,6 +104,7 @@ public class Lexicon implements ILexicon {
 		return matchingWords;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Iterator iterator() {
 		// TODO Auto-generated method stub

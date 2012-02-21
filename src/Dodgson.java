@@ -1,8 +1,5 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Dodgson {
 
@@ -20,22 +17,24 @@ public class Dodgson {
 		
 		List<String> dictionary = lexicon.getSorted().get(wordLength);
 		
-		String printOutput = "";
-		printOutput += "Dodgson Sequence";
-		printOutput += "\n\tStart word: " + startWord;
-		printOutput += "\n\tEnd word: " + endWord;
-		// Print first n elements of each dictionary subgroup
-		int n = 10;
-		printOutput += "\n\tFirst " + n + " Words of same length from dict: ";
-		printOutput += "[";
-		for (int i = 0; i < n; i++) {
-			printOutput += dictionary.get(i);
-			printOutput += i < (n - 1) ? ", " : "";
-		}
-		printOutput += (n < dictionary.size()) ? ", ..." : "";
-		printOutput += "]";
-		
-		System.out.println(printOutput);
+		// Print
+			String printOutput = "";
+			printOutput += "Dodgson Sequence";
+			printOutput += "\n\tStart word: " + startWord;
+			printOutput += "\n\tEnd word: " + endWord;
+			// Print first n elements of each dictionary subgroup
+			int n = 10;
+			printOutput += "\n\tFirst " + n + " Words of same length from dict: ";
+			printOutput += "[";
+			for (int i = 0; i < n; i++) {
+				printOutput += dictionary.get(i);
+				printOutput += i < (n - 1) ? ", " : "";
+			}
+			printOutput += (n < dictionary.size()) ? ", ..." : "";
+			printOutput += "]";
+			
+			System.out.println(printOutput);
+		// End Print
 		
 		return null;
 	}
