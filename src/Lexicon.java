@@ -32,12 +32,12 @@ public class Lexicon implements ILexicon {
 		}
 	}
 
-	public void sortDictionary(List<Integer> list) {
+	public void sortDictionary(List<Integer> wordLengths) {
 		for (String word : dictionary) {
 			int wordLength = word.length();
 
 			// Check to see if we care about this word
-			if (list.contains(wordLength)) {
+			if (wordLengths.contains(wordLength)) {
 
 				// Check if wordLength key exists
 				if (sortedDictionary.get(wordLength) == null) {
