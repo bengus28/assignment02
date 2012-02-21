@@ -23,11 +23,11 @@ public class Lexicon implements ILexicon {
 		}
 	}
 	
-	public void parseFullDictionary(Map<Integer, Boolean> wordLengths) {
+	public void parseFullDictionary(ArrayList<Integer> wordLengths) {
 		while (inFile.hasNext()) {
 			String word = inFile.nextLine();
 			int wordLength = word.length();
-			if (wordLengths.get(wordLength) != null) {
+			if (wordLengths.contains(wordLength)) {
 				if (dictionary.get(wordLength) == null) { //gets the value for an id)
 					dictionary.put(wordLength, new ArrayList<String>()); //no ArrayList assigned, create new ArrayList
 				}

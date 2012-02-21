@@ -3,7 +3,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -15,14 +14,11 @@ public class Assign2 {
 	 */
 	public static void main(String[] args) {
 		
-		String diller = "/Users/adam/Documents/School/School 11-12 Spring/COMP 2210/projects/assignment02/diller1.txt";
-		String sowpods = "/Users/adam/Documents/School/School 11-12 Spring/COMP 2210/projects/assignment02/sowpods.txt";
+		String diller = "diller1.txt";
+		String sowpods = "sowpods.txt";
 		
 		// HashMap containing word lengths
-		Map<Integer, Boolean> wordLengths = new HashMap<Integer, Boolean>();
-		
-		// ArrayList or String arrays containing word pairs
-		List<String[]> wordPairs = new ArrayList<String[]>();
+		Map<Integer, ArrayList<String[]>> words = new HashMap<Integer, ArrayList<String[]>>();
 		
 		try {
 			// Pass in location of diller.txt
@@ -32,33 +28,43 @@ public class Assign2 {
 				// Splits the line at a space character and creates String array
 				String[] wordPair = inFile.nextLine().split("\\s+");
 				
-				// Gets the length of the first String in the array (should both be the same) and adds to wordLength
-				wordLengths.put(wordPair[1].length(), true);
+				// Gets the length of the first String in the array (should both be the same) - used as key
+				int wordLength = wordPair[1].length();
 				
-				// Adds the word pair to wordPairs
-				wordPairs.add(wordPair);
+				if (words.get(wordLength) == null) { //gets the value for an id)
+					words.put(wordLength, new ArrayList<String[]>()); //no ArrayList assigned, create new ArrayList
+				}
+				words.get(wordLength).add(wordPair); //adds value to list.
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		// Prints the HashMap of word lengths
-		System.out.println("Word Lengths:\n\t" + wordLengths);
-		
-		// Prints the word pairs
-		System.out.println("\nWord Pairs:");
-		for (String[] wordPair : wordPairs) {
-			System.out.println("\t" + Arrays.toString(wordPair));
+		// Prints the HashMap of word lengths	
+		for (Integer key : words.keySet()) {
+			ArrayList<String[]> value = words.get(key);
+			
+			// Just so that we aren't displaying all of the words on this print
+			
+			String output = "";
+			for (String[] wordPair : value) {
+				output += Arrays.toString(wordPair);
+			}
+
+			System.out.println(key + " " + output);
+			// Don't use the key to get the value, use Map.Entry instead to save
+			// the lookup.
 		}
 		
 		Lexicon lexicon = new Lexicon();
 		lexicon.open(new File(sowpods));
-		lexicon.parseFullDictionary(wordLengths);
+				
+		lexicon.parseFullDictionary(new ArrayList<Integer>(words.keySet()));
 		
 		Map<Integer, ArrayList<String>> sorted = lexicon.getSorted();
 		
-		// Print
+		// Print sorted dictionary
 		System.out.println("\nSowPods:");
 		for (Integer key : sorted.keySet()) {
 			ArrayList<String> value = sorted.get(key);
@@ -73,9 +79,7 @@ public class Assign2 {
 			// Don't use the key to get the value, use Map.Entry instead to save
 			// the lookup.
 		}
-		
-		// System.out.println(wordLengths.get(2));
-		
+				
 	}
 
 }
