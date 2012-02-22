@@ -1,16 +1,17 @@
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class Assign2 {
 
 	/**
-	 * @param args
+	 * @param args - No command line arguments.
 	 */
 	public static void main(String[] args) {
 		
 		File diller1File = new File("diller1.txt");
-		File sowpodsFile = new File("sowpods.txt");
+		File sowpodsFile = new File("wordlists/2of12.txt"); // Using a more common word list just for fun
 
 
 		// ParseInput
@@ -34,7 +35,11 @@ public class Assign2 {
 		Dodgson dodgson = new Dodgson();
 		for (String[] wordPair : diller.getWordPairs()) {
 			System.out.println("Words: " + Arrays.toString(wordPair));
-			System.out.println("\tPath: " + dodgson.findPath(wordPair, lexicon));
+			List<String> path = dodgson.findPath(wordPair, lexicon);
+			if (path != null)
+				System.out.println("\tPath: " + path);
+			else
+				System.out.println("\tNo path exists.");
 		}		
 	}
 

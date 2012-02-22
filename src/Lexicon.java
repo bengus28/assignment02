@@ -8,6 +8,13 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+/**
+ * Defines operations on a lexicon - a collection of strings that 
+ * are accepted as words in the English language.
+ * 
+ * @author Adam Bulgatz and Ben Gustafson
+ *
+ */
 public class Lexicon implements ILexicon {
 
 	private Scanner inFile;
@@ -25,13 +32,19 @@ public class Lexicon implements ILexicon {
 		try {
 			inFile = new Scanner(filename);
 			while (inFile.hasNext())
-				dictionary.add(inFile.nextLine());
+				dictionary.add(inFile.nextLine().toUpperCase());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Cut down the search space of the dictionary by pulling out only
+	 * necessary word lengths.
+	 * 
+	 * @param wordLengths - List of Integers containing word lengths.
+	 */
 	public void sortDictionary(List<Integer> wordLengths) {
 		for (String word : dictionary) {
 			int wordLength = word.length();
@@ -52,14 +65,28 @@ public class Lexicon implements ILexicon {
 		isSorted = true;
 	}
 
+	/**
+	 * Get the sorted dictionary.
+	 * 
+	 * @return A HashMap with word lengths as keys if the dictionary has been sorted,
+	 * otherwise returns null.
+	 */
 	public Map<Integer, ArrayList<String>> getSorted() {
-		return sortedDictionary;
+		if (isSorted)
+			return sortedDictionary;
+		else
+			return null;
 	}
 	
 //	public List<String> getOneWordLength(int wordLength) {
 //		return sortedDictionary.get(wordLength);
 //	}
 
+	/**
+	 * Get the full dictionary
+	 * 
+	 * @return A List of Strings
+	 */
 	public List<String> getDictionary() {
 		return dictionary;
 	}
@@ -82,16 +109,22 @@ public class Lexicon implements ILexicon {
 		return false;
 	}
 
+	/**
+	 * Get a list of words with a one character difference from an input word.
+	 * 
+	 * @param str - input word
+	 * @return List of Strings
+	 */
 	public List<String> wordsOneOff(String str) {
 		int wordLength = str.length();
-		String regex = generateRegex(str);
+		String regex = wordsOneOffRegex(str);
 		if (isSorted && sortedDictionary.get(wordLength) != null) {
-			return findMatchingWords(str, regex, sortedDictionary.get(wordLength));
+			return wordsOneOff(str, regex, sortedDictionary.get(wordLength));
 		}
-		return findMatchingWords(str, regex, dictionary);
+		return wordsOneOff(str, regex, dictionary);
 	}
 
-	public List<String> findMatchingWords(String originalWord, String regex, List<String> words) {
+	private List<String> wordsOneOff(String originalWord, String regex, List<String> words) {
 		List<String> matchingWords = new ArrayList<String>();
 		for (String word : words) {
 			if (Pattern.matches(regex, word)) {
@@ -103,15 +136,8 @@ public class Lexicon implements ILexicon {
 		matchingWords.remove(originalWordIndex);
 		return matchingWords;
 	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public Iterator iterator() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String generateRegex(String str) {
+	
+	private String wordsOneOffRegex(String str) {
 		StringBuilder sb = new StringBuilder("(");
 		for (int i = 1; i <= str.length(); i++)
 			sb.append(str.subSequence(0, i - 1)).append("[a-z]").append(str.subSequence(i, str.length())).append("|");
@@ -120,6 +146,18 @@ public class Lexicon implements ILexicon {
 		return sb.toString().toUpperCase();
 	}
 
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Iterator iterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * If the dictionary is sorted, return the sorted dictionary, else return the full dictionary.
+	 * 
+	 * @return A String
+	 */
 	public String toString() {
 		if (isSorted) {
 			int n = 10; // Number of items in each group to print

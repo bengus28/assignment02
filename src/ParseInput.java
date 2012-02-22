@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Parses an input file of word pairs.
+ * 
+ * @author Adam Bulgatz and Ben Gustafson
+ *
+ */
 public class ParseInput {
 
 	/**
@@ -19,10 +25,16 @@ public class ParseInput {
 
 	}
 
+	/**
+	 * @param filename - path to input file
+	 */
 	public ParseInput(File filename) {
 		parse(filename);
 	}
 
+	/**
+	 * @param filename - path to input file
+	 */
 	public void parse(File filename) {
 		try {
 
@@ -53,10 +65,16 @@ public class ParseInput {
 
 	}
 	
+	/**
+	 * @return HashMap of words
+	 */
 	public Map<Integer, ArrayList<String[]>> getWordPairMap() {
 		return words;
 	}
 	
+	/**
+	 * @return Word pairs in a List of String arrays
+	 */
 	public List<String[]> getWordPairs() {
 		List<String[]> wordPairs = new ArrayList<String[]>();
 		for (Integer wordLength : words.keySet()) {
@@ -68,11 +86,17 @@ public class ParseInput {
 		return wordPairs;
 	}
 	
+	/**
+	 * @return Word lengths in a List of Integers
+	 */
 	public List<Integer> getWordLengths() {
 		List<Integer> wordLengths = new ArrayList<Integer>(words.keySet());
 		return wordLengths;
 	}
 
+	/**
+	 * @return String based on HashMap
+	 */
 	public String toString() {
 		String output = "Word pairs sorted by length:";
 			for (Integer key : words.keySet()) {
