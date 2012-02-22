@@ -1,6 +1,9 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.List;
 import java.util.Map;
@@ -8,94 +11,65 @@ import java.util.Map;
 public class Dodgson {
 
 	private final int FROM = 0, TO = 1;
-	
+
 	private final String RELATED = "related", BREADCRUMBS = "breadcrumbs";
-	
-	Map<String, Map<String, List<String>>> searchTree = new HashMap<String, Map<String, List<String>>>();
-	
+
 	public Dodgson() {
-		
+
 	}
-	
-	public List<String> findPath(String[] wordPair, Lexicon lexicon) {
-		String startWord = wordPair[FROM];
-		String endWord = wordPair[TO];
+
+	public String findPath(String[] wordPair, Lexicon lexicon) {
 		
-		int wordLength = startWord.length();
+		// Start and end words
+		String startWord = wordPair[FROM].toUpperCase();
+		String endWord = wordPair[TO].toUpperCase();
 		
-		List<String> dictionary = lexicon.getSorted().get(wordLength);
+		// Path starts with start word
+		List<String> startPath = new ArrayList<String>();
+		startPath.add(startWord);
 		
-		// Print
-			String printOutput = "";
-			printOutput += "Dodgson Sequence";
-			printOutput += "\n\tStart word: " + startWord;
-			printOutput += "\n\tEnd word: " + endWord;
-			// Print first n elements of each dictionary subgroup
-			int n = 10;
-			printOutput += "\n\tFirst " + n + " words from dictionary of same length as word pair:";
-			printOutput += "\n\t\t[";
-			for (int i = 0; i < n; i++) {
-				printOutput += dictionary.get(i);
-				printOutput += i < (n - 1) ? ", " : "";
-			}
-			printOutput += (n < dictionary.size()) ? ", ..." : "";
-			printOutput += "]";
+		// Create two queues: words and path
+		Queue<String> words = new LinkedList<String>();
+		Queue<List<String>> path = new LinkedList<List<String>>();
+		
+		// Create array to keep track of already searched words
+		List<String> searched = new ArrayList<String>();
+		
+		words.add(startWord);
+		path.add(startPath);
+		
+//		int i = 0;
+		while (!words.peek().equals(endWord) && words != null) {
+//			i++;
+			System.out.println("Starting Words: " + words);
+			System.out.println("Starting Path: " + path);
 			
-			System.out.println(printOutput);
-		// End Print
-		
-		searchTree.put(startWord, new HashMap<String, List<String>>());
-		searchTree.get(startWord).put(RELATED, lexicon.wordsOneOff(startWord));
-		searchTree.get(startWord).put(BREADCRUMBS, new ArrayList<String>());
-		searchTree.get(startWord).get(BREADCRUMBS).add(startWord);
-		
-		for (String parentWord : searchTree.keySet()) {
-			for (String relatedWord : searchTree.get(parentWord).get(RELATED)) {
-				if (relatedWord.equals(endWord)) {
-					List<String> output = searchTree.get(parentWord).get(BREADCRUMBS);
-					output.add(relatedWord);
-					return output;
+			String currentWord = words.poll();
+			List<String> currentPath = path.poll();
+			
+			System.out.println("Current word: " + currentWord);
+			System.out.println("Current path: " + currentPath);
+			
+			List<String> wordsOneOff = lexicon.wordsOneOff(currentWord);
+			System.out.println("Words one off: " + wordsOneOff);
+			
+			for (String word : wordsOneOff) {		
+				if (word.equals(endWord)) {
+					currentPath.add(word);
+					System.out.println(currentPath);
+					return null;
+				} else if (!searched.contains(word)){
+					words.add(word);
+					List<String> tempPath = new ArrayList<String>();
+					for (String wordInPath : currentPath) {
+						tempPath.add(wordInPath);
+					}
+					tempPath.add(word);
+					path.add(tempPath);
+					searched.add(word);
 				}
-				searchTree.put(relatedWord, new HashMap<String, List<String>>());
-				searchTree.get(relatedWord).put(RELATED, lexicon.wordsOneOff(relatedWord));
-				searchTree.get(relatedWord).put(BREADCRUMBS, searchTree.get(parentWord).get(BREADCRUMBS));
-				searchTree.get(relatedWord).get(BREADCRUMBS).add(relatedWord);
 			}
 		}
 		return null;
-	}
-	public String findUsingQueue (String[] wordPair, Lexicon lexicon)
-	{
-		String startWord = wordPair[FROM];
-		String endWord = wordPair[TO];
-		
-		Queue<String> words = new LinkedList<String>();
-		Queue<String> path = new LinkedList<String>();
-		ArrayList<String> searched = new ArrayList<String>();
-		words.add(startWord);
-		path.add("");
-		
-		while ( (words.peek() != endWord ) && (words != null))
-		{
-			String currentWord = words.poll();
-			String currentPath = path.poll();
-			List<String> oneOffCurrent = lexicon.wordsOneOff(currentWord);
-			
-			while (oneOffCurrent != null)
-			{
-				String current = oneOffCurrent.get(0);
-				
-				if (!searched.contains(current))
-				{
-					words.add(current);
-					searched.add(current);
-					path.add(currentPath + "," + currentWord);
-				}
-			}
-		}
-		if (words != null)
-			return path.poll() + "," + words.poll();
-		else
-			return null;
 	}
 }
