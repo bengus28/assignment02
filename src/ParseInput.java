@@ -81,7 +81,7 @@ public class ParseInput {
 				output += "\n\t";
 				output += key + " ";
 				
-				output += "{";
+				output += "[";
 				
 				// Without commas separating String[] arrays
 //				for (String[] wordPair : wordPairs) {
@@ -97,7 +97,7 @@ public class ParseInput {
 					}
 				}
 				
-				output += "}";
+				output += "]";
 			}
 		return output;
 	}

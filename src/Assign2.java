@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.Arrays;
 
 
 public class Assign2 {
@@ -14,25 +15,26 @@ public class Assign2 {
 
 		// ParseInput
 		ParseInput diller = new ParseInput(diller1File);
-		System.out.println(diller);
+//		System.out.println(diller);
 		
 		
 		// Lexicon
 		Lexicon lexicon = new Lexicon();
 		lexicon.open(sowpodsFile);
 		lexicon.sortDictionary(diller.getWordLengths());
-		System.out.println(lexicon);
+//		System.out.println(lexicon);
 			
 		// Test some lexicon functionality
-		String testWord = "hello";
-		System.out.println("isWord(" + testWord + "): " + lexicon.isWord(testWord));
-		System.out.println("wordsOneOff(" + testWord + "): " + lexicon.wordsOneOff(testWord));
+//		String testWord = "hello";
+//		System.out.println("isWord(" + testWord + "): " + lexicon.isWord(testWord));
+//		System.out.println("wordsOneOff(" + testWord + "): " + lexicon.wordsOneOff(testWord));
 		
 		
 		// Dodgson
 		Dodgson dodgson = new Dodgson();
 		for (String[] wordPair : diller.getWordPairs()) {
-			dodgson.findPath(wordPair, lexicon);
+			System.out.println("Words: " + Arrays.toString(wordPair));
+			System.out.println("\tPath: " + dodgson.findPath(wordPair, lexicon));
 		}		
 	}
 
