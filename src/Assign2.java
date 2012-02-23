@@ -29,6 +29,7 @@ public class Assign2 {
 //		String testWord = "hello";
 //		System.out.println("isWord(" + testWord + "): " + lexicon.isWord(testWord));
 //		System.out.println("wordsOneOff(" + testWord + "): " + lexicon.wordsOneOff(testWord));
+//		System.out.println("isPrefix(" + testWord + "): " + lexicon.isPrefix(testWord));
 		
 		
 		// Dodgson

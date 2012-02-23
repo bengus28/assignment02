@@ -77,10 +77,6 @@ public class Lexicon implements ILexicon {
 		else
 			return null;
 	}
-	
-//	public List<String> getOneWordLength(int wordLength) {
-//		return sortedDictionary.get(wordLength);
-//	}
 
 	/**
 	 * Get the full dictionary
@@ -105,7 +101,13 @@ public class Lexicon implements ILexicon {
 
 	@Override
 	public boolean isPrefix(String str) {
-		// TODO Auto-generated method stub
+		StringBuilder sb = new StringBuilder("\\b");
+		sb.append(str.toUpperCase() + "[A-Z]");
+		for (String word : dictionary) {
+			if (Pattern.matches(sb.toString(), word)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -124,6 +126,16 @@ public class Lexicon implements ILexicon {
 		return wordsOneOff(str, regex, dictionary);
 	}
 
+	/**
+	 * Helper method for public wordsOneOff that does the actual string matching.
+	 * This was created so that there wouldn't be duplicate code in the public
+	 * wordsOneOff after checking to see if the dictionary has been sorted.
+	 * 
+	 * @param originalWord - the original word.
+	 * @param regex - the regular expression generated from the original word.
+	 * @param words - the list of words to search.
+	 * @return A List or words
+	 */
 	private List<String> wordsOneOff(String originalWord, String regex, List<String> words) {
 		List<String> matchingWords = new ArrayList<String>();
 		for (String word : words) {
@@ -137,6 +149,14 @@ public class Lexicon implements ILexicon {
 		return matchingWords;
 	}
 	
+	/**
+	 * Helper method for wordsOneOff that generated the regular expression
+	 * to match the dictionary against.
+	 * 
+	 * @param str - the base word for the generated regular expression.
+	 * @return a String of the regular expression. If input is "the", generated
+	 * expression will be "([A-Z]HE|T[A-Z]E|TH[A-Z])".
+	 */
 	private String wordsOneOffRegex(String str) {
 		StringBuilder sb = new StringBuilder("(");
 		for (int i = 1; i <= str.length(); i++)
