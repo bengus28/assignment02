@@ -10,21 +10,24 @@ public class Assign2 {
 	 */
 	public static void main(String[] args) {
 		
-		File diller1File = new File("diller1.txt");
-		File sowpodsFile = new File("wordlists/2of12.txt"); // Using a more common word list just for fun
+		File inputFile = new File("diller1.txt");
+		// TODO Make sure wordListFile is "wordLists/sowpods.txt" before submitting assignment
+		File wordListFile = new File("wordlists/sowpods.txt");
 
 
 		// ParseInput
-		ParseInput diller = new ParseInput(diller1File);
-//		System.out.println(diller);
+		ParseInput words = new ParseInput(inputFile);
+		List<String[]> wordPairs = words.getWordPairs();
+		System.out.println(words);
 		
 		
 		// Lexicon
-		Lexicon lexicon = new Lexicon();
-		lexicon.open(sowpodsFile);
-		lexicon.prune(diller.getWordLengths());
-//		System.out.println(lexicon);
-			
+		Lexicon wordList = new Lexicon();
+		wordList.open(wordListFile);
+		wordList.prune(words.getWordLengths());
+		System.out.println(wordList);
+		
+		
 		// Test some lexicon functionality
 //		String testWord = "hello";
 //		System.out.println("isWord(" + testWord + "): " + lexicon.isWord(testWord));
@@ -34,13 +37,20 @@ public class Assign2 {
 		
 		// Dodgson
 		Dodgson dodgson = new Dodgson();
-		for (String[] wordPair : diller.getWordPairs()) {
-			System.out.println("Words: " + Arrays.toString(wordPair));
-			List<String> path = dodgson.findPath(wordPair, lexicon);
+		
+		// For each word pair
+		for (String[] wordPair : wordPairs) {
+			
+		// Print the word pair
+		System.out.println("Words: " + Arrays.toString(wordPair));
+			
+			// Find the path
+			List<String> path = dodgson.findPath(wordPair, wordList);
 			if (path != null)
 				System.out.println("\tPath: " + path);
 			else
 				System.out.println("\tNo path exists.");
+			
 		}		
 	}
 

@@ -11,11 +11,6 @@ import java.util.Queue;
  */
 public class Dodgson {
 
-	/**
-	 * Location of start and end words in the String[] array.
-	 */
-	private static final int START_WORD_INDEX = 0, END_WORD_INDEX = 1;
-
 	public Dodgson() {
 
 	}
@@ -29,9 +24,20 @@ public class Dodgson {
 	 */
 	public List<String> findPath(String[] wordPair, Lexicon lexicon) {
 		
+		// Null if the word pair is valid. Otherwise contains the invalid word(s)
+		List<String> isValidWordPair = lexicon.isValidWordPair(wordPair);
+		
+		if (isValidWordPair != null) {
+			// The word pair isn't valid
+			for (String word : isValidWordPair) {
+				System.out.println("\t" + word + " is not a valid word.");
+			}
+			return null;
+		}
+		
 		// Start and end words
-		String startWord = wordPair[START_WORD_INDEX].toUpperCase();
-		String endWord = wordPair[END_WORD_INDEX].toUpperCase();
+		String startWord = wordPair[ParseInput.START_WORD_INDEX].toUpperCase();
+		String endWord = wordPair[ParseInput.END_WORD_INDEX].toUpperCase();
 		
 		// Path starts with start word
 		List<String> startPath = new ArrayList<String>();

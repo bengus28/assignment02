@@ -34,8 +34,8 @@ public class Lexicon implements ILexicon {
 			while (inFile.hasNext())
 				wordList.add(inFile.nextLine().toUpperCase());
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			System.out.println("Invalid file location");
 		}
 	}
 
@@ -96,6 +96,33 @@ public class Lexicon implements ILexicon {
 		if (wordList.contains(str.toUpperCase()))
 			return true;
 		return false;
+	}
+	
+	/**
+	 * Validates a word pair
+	 * 
+	 * @param wordPair
+	 * @return A List of Strings. Null if the word pair is valid.
+	 * Otherwise contains the invalid word(s).
+	 */
+	public List<String> isValidWordPair(String[] wordPair) {
+		String startWord = wordPair[ParseInput.START_WORD_INDEX];
+		String endWord = wordPair[ParseInput.END_WORD_INDEX];
+		
+		boolean isStartWordValid = isWord(startWord);
+		boolean isEndWordValid = isWord(endWord);
+		
+		List<String> output = null;
+		
+		if (!isStartWordValid || !isEndWordValid) {
+			output = new ArrayList<String>();
+			if (!isStartWordValid)
+				output.add(startWord);
+			if (!isEndWordValid)
+				output.add(endWord);
+		}
+		
+		return output;
 	}
 
 	@Override
@@ -173,18 +200,21 @@ public class Lexicon implements ILexicon {
 	}
 
 	/**
-	 * If the word list has been pruned, return the pruned word list, else return the full dictionary.
+	 * Returns the pruned word list (if the word list has been pruned) and the full word list.
 	 * 
 	 * @return A String
 	 */
 	public String toString() {
+		int n = 10; // Number of items in each group to print
+		
+		String output = isPruned ? "Word list has been pruned:" : "Word list has not been pruned:";
+		
 		if (isPruned) {
-			int n = 10; // Number of items in each group to print
-			String output = "Sowpods: (showing first " + n + " items for each word length)";
+			output += "\n\tPruned word list: (showing first " + n + " items for each word length)";
 			for (Integer key : prunedWordList.keySet()) {
 				ArrayList<String> dictionarySubgroup = prunedWordList.get(key);
 
-				output += "\n\t";
+				output += "\n\t\t";
 				output += key;
 				output += " [";
 				// Print first n elements of each dictionary subgroup
@@ -195,9 +225,17 @@ public class Lexicon implements ILexicon {
 				output += (n < dictionarySubgroup.size()) ? ", ..." : "";
 				output += "]";
 			}
-			return output;
 		}
-		return this.toString();
+		output += "\n\tFull word list: (showing first " + n + " items)";
+		output += "\n\t\t";
+		output += "[";
+		for (int i = 0; i < n; i++) {
+			output += wordList.get(i);
+			output += i < (n - 1) ? ", " : "";
+		}
+		output += (n < wordList.size()) ? ", ..." : "";
+		output += "]";
+		return output;
 	}
 
 }

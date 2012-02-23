@@ -16,6 +16,11 @@ import java.util.Scanner;
 public class ParseInput {
 
 	/**
+	 * Location of start and end words in the String[] array.
+	 */
+	public static final int START_WORD_INDEX = 0, END_WORD_INDEX = 1;
+	
+	/**
 	 * HashMap key - Integer value representing word length value - ArrayList
 	 * containing String[] arrays of word pairs
 	 */
