@@ -22,7 +22,7 @@ public class Assign2 {
 		// Lexicon
 		Lexicon lexicon = new Lexicon();
 		lexicon.open(sowpodsFile);
-		lexicon.sortDictionary(diller.getWordLengths());
+		lexicon.prune(diller.getWordLengths());
 //		System.out.println(lexicon);
 			
 		// Test some lexicon functionality

@@ -12,7 +12,7 @@ import java.util.Queue;
 public class Dodgson {
 
 	/**
-	 * Location of start and end words in the String[] array
+	 * Location of start and end words in the String[] array.
 	 */
 	private static final int START_WORD_INDEX = 0, END_WORD_INDEX = 1;
 

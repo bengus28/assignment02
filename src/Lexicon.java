@@ -19,20 +19,20 @@ public class Lexicon implements ILexicon {
 
 	private Scanner inFile;
 
-	private boolean isSorted = false;
+	private boolean isPruned = false;
 
-	// Unsorted dictionary
-	List<String> dictionary = new ArrayList<String>();
+	// Full word list
+	List<String> wordList = new ArrayList<String>();
 
-	// Sorted dictionary
-	Map<Integer, ArrayList<String>> sortedDictionary = new HashMap<Integer, ArrayList<String>>();
+	// Pruned word list
+	Map<Integer, ArrayList<String>> prunedWordList = new HashMap<Integer, ArrayList<String>>();
 
 	@Override
 	public void open(File filename) {
 		try {
 			inFile = new Scanner(filename);
 			while (inFile.hasNext())
-				dictionary.add(inFile.nextLine().toUpperCase());
+				wordList.add(inFile.nextLine().toUpperCase());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -40,51 +40,50 @@ public class Lexicon implements ILexicon {
 	}
 
 	/**
-	 * Cut down the search space of the dictionary by pulling out only
-	 * necessary word lengths.
+	 * Prune the word list by keeping only words of a certain length.
 	 * 
 	 * @param wordLengths - List of Integers containing word lengths.
 	 */
-	public void sortDictionary(List<Integer> wordLengths) {
-		for (String word : dictionary) {
+	public void prune(List<Integer> wordLengths) {
+		for (String word : wordList) {
 			int wordLength = word.length();
 
 			// Check to see if we care about this word
 			if (wordLengths.contains(wordLength)) {
 
 				// Check if wordLength key exists
-				if (sortedDictionary.get(wordLength) == null) {
+				if (prunedWordList.get(wordLength) == null) {
 					// Create new ArrayList of Strings with key wordLength
-					sortedDictionary.put(wordLength, new ArrayList<String>());
+					prunedWordList.put(wordLength, new ArrayList<String>());
 				}
 
 				// Add value to list.
-				sortedDictionary.get(wordLength).add(word);
+				prunedWordList.get(wordLength).add(word);
 			}
 		}
-		isSorted = true;
+		isPruned = true;
 	}
 
 	/**
-	 * Get the sorted dictionary.
+	 * Get the pruned word list.
 	 * 
-	 * @return A HashMap with word lengths as keys if the dictionary has been sorted,
+	 * @return A HashMap with word lengths as keys if the word list has been pruned,
 	 * otherwise returns null.
 	 */
-	public Map<Integer, ArrayList<String>> getSorted() {
-		if (isSorted)
-			return sortedDictionary;
+	public Map<Integer, ArrayList<String>> getPrunedWordList() {
+		if (isPruned)
+			return prunedWordList;
 		else
 			return null;
 	}
 
 	/**
-	 * Get the full dictionary
+	 * Get the full word list.
 	 * 
-	 * @return A List of Strings
+	 * @return A List of Strings.
 	 */
-	public List<String> getDictionary() {
-		return dictionary;
+	public List<String> getWordList() {
+		return wordList;
 	}
 
 	@Override
@@ -94,7 +93,7 @@ public class Lexicon implements ILexicon {
 
 	@Override
 	public boolean isWord(String str) {
-		if (dictionary.contains(str.toUpperCase()))
+		if (wordList.contains(str.toUpperCase()))
 			return true;
 		return false;
 	}
@@ -103,7 +102,7 @@ public class Lexicon implements ILexicon {
 	public boolean isPrefix(String str) {
 		StringBuilder sb = new StringBuilder("\\b");
 		sb.append(str.toUpperCase() + "[A-Z]");
-		for (String word : dictionary) {
+		for (String word : wordList) {
 			if (Pattern.matches(sb.toString(), word)) {
 				return true;
 			}
@@ -114,16 +113,16 @@ public class Lexicon implements ILexicon {
 	/**
 	 * Get a list of words with a one character difference from an input word.
 	 * 
-	 * @param str - input word
-	 * @return List of Strings
+	 * @param str - input word.
+	 * @return List of Strings.
 	 */
 	public List<String> wordsOneOff(String str) {
 		int wordLength = str.length();
 		String regex = wordsOneOffRegex(str);
-		if (isSorted && sortedDictionary.get(wordLength) != null) {
-			return wordsOneOff(str, regex, sortedDictionary.get(wordLength));
+		if (isPruned && prunedWordList.get(wordLength) != null) {
+			return wordsOneOff(str, regex, prunedWordList.get(wordLength));
 		}
-		return wordsOneOff(str, regex, dictionary);
+		return wordsOneOff(str, regex, wordList);
 	}
 
 	/**
@@ -150,8 +149,8 @@ public class Lexicon implements ILexicon {
 	}
 	
 	/**
-	 * Helper method for wordsOneOff that generated the regular expression
-	 * to match the dictionary against.
+	 * Helper method for wordsOneOff that generates the regular expression
+	 * to match against each word in the word list.
 	 * 
 	 * @param str - the base word for the generated regular expression.
 	 * @return a String of the regular expression. If input is "the", generated
@@ -174,16 +173,16 @@ public class Lexicon implements ILexicon {
 	}
 
 	/**
-	 * If the dictionary is sorted, return the sorted dictionary, else return the full dictionary.
+	 * If the word list has been pruned, return the pruned word list, else return the full dictionary.
 	 * 
 	 * @return A String
 	 */
 	public String toString() {
-		if (isSorted) {
+		if (isPruned) {
 			int n = 10; // Number of items in each group to print
 			String output = "Sowpods: (showing first " + n + " items for each word length)";
-			for (Integer key : sortedDictionary.keySet()) {
-				ArrayList<String> dictionarySubgroup = sortedDictionary.get(key);
+			for (Integer key : prunedWordList.keySet()) {
+				ArrayList<String> dictionarySubgroup = prunedWordList.get(key);
 
 				output += "\n\t";
 				output += key;
