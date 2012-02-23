@@ -21,20 +21,29 @@ public class Lexicon implements ILexicon {
 
 	private boolean isPruned = false;
 
-	// Full word list
+	/**
+	 * Full word list
+	 */
 	List<String> wordList = new ArrayList<String>();
 
-	// Pruned word list
+	/**
+	 * Pruned word list
+	 */
 	Map<Integer, ArrayList<String>> prunedWordList = new HashMap<Integer, ArrayList<String>>();
 
 	@Override
 	public void open(File filename) {
 		try {
+			
+			// Instantiate inFile scanner with filename
 			inFile = new Scanner(filename);
+			
+			// Make each word in the file upper-case and add to the wordList
 			while (inFile.hasNext())
 				wordList.add(inFile.nextLine().toUpperCase());
+			
 		} catch (FileNotFoundException e) {
-			// e.printStackTrace();
+//			e.printStackTrace();
 			System.out.println("Invalid file location");
 		}
 	}
@@ -45,22 +54,28 @@ public class Lexicon implements ILexicon {
 	 * @param wordLengths - List of Integers containing word lengths.
 	 */
 	public void prune(List<Integer> wordLengths) {
+		
+		// For each word in the wordList
 		for (String word : wordList) {
+			
+			// Get the word length
 			int wordLength = word.length();
 
 			// Check to see if we care about this word
 			if (wordLengths.contains(wordLength)) {
 
-				// Check if wordLength key exists
+				// Check if a key already exists for wordLength
 				if (prunedWordList.get(wordLength) == null) {
-					// Create new ArrayList of Strings with key wordLength
+					// If it doesn't, create a new ArrayList of Strings with key wordLength
 					prunedWordList.put(wordLength, new ArrayList<String>());
 				}
 
-				// Add value to list.
+				// Add the word to the pruned list with key wordLength
 				prunedWordList.get(wordLength).add(word);
 			}
 		}
+		
+		// Set isPruned to true
 		isPruned = true;
 	}
 
@@ -93,7 +108,15 @@ public class Lexicon implements ILexicon {
 
 	@Override
 	public boolean isWord(String str) {
-		if (wordList.contains(str.toUpperCase()))
+		
+		// Get the word length
+		int wordLength = str.length();
+		
+		// Use the pruned word list if we can
+		if (canUsePruned(wordLength)) {
+			if (prunedWordList.get(wordLength).contains(str.toUpperCase()))
+				return true;
+		} else if (wordList.contains(str.toUpperCase()))
 			return true;
 		return false;
 	}
@@ -106,14 +129,21 @@ public class Lexicon implements ILexicon {
 	 * Otherwise contains the invalid word(s).
 	 */
 	public List<String> isValidWordPair(String[] wordPair) {
+		// Get the start and end words from the String[] array
 		String startWord = wordPair[ParseInput.START_WORD_INDEX];
 		String endWord = wordPair[ParseInput.END_WORD_INDEX];
 		
+		// Check if startWord and endWord are valid words
 		boolean isStartWordValid = isWord(startWord);
 		boolean isEndWordValid = isWord(endWord);
 		
+		// Define a null List of Strings
 		List<String> output = null;
 		
+		/*
+		 * If either the startWord or endWord are not valid words,
+		 * instantiate the List of Strings and add the non-valid word(s).
+		 */
 		if (!isStartWordValid || !isEndWordValid) {
 			output = new ArrayList<String>();
 			if (!isStartWordValid)
@@ -127,12 +157,36 @@ public class Lexicon implements ILexicon {
 
 	@Override
 	public boolean isPrefix(String str) {
-		StringBuilder sb = new StringBuilder("\\b");
-		sb.append(str.toUpperCase() + "[A-Z]");
+		/*
+		 * Build a regular expression to match the input string to the
+		 * beginning of a word. Note: '\b' is a regex word boundary.
+		 * The final regex should look like '\bINPUT[A-Z]' without the quotes.
+		 * the '[A-Z]' is necessary to make sure that str is a prefix, not
+		 * an entire word. str has been converted to upper-case to match
+		 * the word list.
+		 */
+		String regex = "\\b" + str.toUpperCase() + "[A-Z]";
+		
+		// Perform the search on each word in the full word list
 		for (String word : wordList) {
-			if (Pattern.matches(sb.toString(), word)) {
+			if (Pattern.matches(regex, word)) {
 				return true;
 			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Checks if the pruned list can be used in a search.
+	 * 
+	 * @param wordLength - the length of the word to check against.
+	 * @return true if the word list has been pruned and the pruned
+	 * list contains words of wordLength.
+	 */
+	private boolean canUsePruned(int wordLength) {
+		if (isPruned && prunedWordList.get(wordLength) != null) {
+			return true;
 		}
 		return false;
 	}
@@ -144,9 +198,19 @@ public class Lexicon implements ILexicon {
 	 * @return List of Strings.
 	 */
 	public List<String> wordsOneOff(String str) {
+		
+		// If input is not a valid word, return an empty List of Strings
+		if (!isWord(str))
+			return new ArrayList<String>();
+		
+		// Get the word length
 		int wordLength = str.length();
+		
+		// Generate regex for the word
 		String regex = wordsOneOffRegex(str);
-		if (isPruned && prunedWordList.get(wordLength) != null) {
+		
+		// Use the pruned list if we can
+		if (canUsePruned(wordLength)) {
 			return wordsOneOff(str, regex, prunedWordList.get(wordLength));
 		}
 		return wordsOneOff(str, regex, wordList);
@@ -155,7 +219,7 @@ public class Lexicon implements ILexicon {
 	/**
 	 * Helper method for public wordsOneOff that does the actual string matching.
 	 * This was created so that there wouldn't be duplicate code in the public
-	 * wordsOneOff after checking to see if the dictionary has been sorted.
+	 * wordsOneOff after checking to see if the dictionary has been pruned.
 	 * 
 	 * @param originalWord - the original word.
 	 * @param regex - the regular expression generated from the original word.
@@ -180,8 +244,8 @@ public class Lexicon implements ILexicon {
 	 * to match against each word in the word list.
 	 * 
 	 * @param str - the base word for the generated regular expression.
-	 * @return a String of the regular expression. If input is "the", generated
-	 * expression will be "([A-Z]HE|T[A-Z]E|TH[A-Z])".
+	 * @return A String of the regular expression. If input is "the", generated
+	 * expression will be <nobr><code>([A-Z]HE|T[A-Z]E|TH[A-Z])</code></nobr>.
 	 */
 	private String wordsOneOffRegex(String str) {
 		StringBuilder sb = new StringBuilder("(");
@@ -200,14 +264,17 @@ public class Lexicon implements ILexicon {
 	}
 
 	/**
-	 * Returns the pruned word list (if the word list has been pruned) and the full word list.
+	 * Returns the pruned word list (if the word list has been pruned) and
+	 * the full word list as a String.
 	 * 
-	 * @return A String
+	 * @return A String (duh)
 	 */
 	public String toString() {
-		int n = 10; // Number of items in each group to print
+		// Number of items in each list to print
+		int n = 10;
 		
-		String output = isPruned ? "Word list has been pruned:" : "Word list has not been pruned:";
+		String output = "The word list ";
+		output += isPruned ? "has been pruned:" : "has not been pruned:";
 		
 		if (isPruned) {
 			output += "\n\tPruned word list: (showing first " + n + " items for each word length)";

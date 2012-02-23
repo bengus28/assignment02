@@ -29,10 +29,15 @@ public class Assign2 {
 		
 		
 		// Test some lexicon functionality
-//		String testWord = "hello";
-//		System.out.println("isWord(" + testWord + "): " + lexicon.isWord(testWord));
-//		System.out.println("wordsOneOff(" + testWord + "): " + lexicon.wordsOneOff(testWord));
-//		System.out.println("isPrefix(" + testWord + "): " + lexicon.isPrefix(testWord));
+		String[] testWords = {"hello", "hell", "apple", "ap", "can", "candle"};
+		System.out.println("Test some lexicon functionality");
+		for (String word : testWords) {
+			String output = "\tWord: " + word;
+				output += "\n\t\tisWord(): " + wordList.isWord(word);
+				output += "\n\t\twordsOneOff(): " + wordList.wordsOneOff(word);
+				output += "\n\t\tisPrefix(): " + wordList.isPrefix(word);
+			System.out.println(output);
+		}
 		
 		
 		// Dodgson

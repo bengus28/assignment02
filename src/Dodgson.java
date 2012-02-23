@@ -27,34 +27,38 @@ public class Dodgson {
 		// Null if the word pair is valid. Otherwise contains the invalid word(s)
 		List<String> isValidWordPair = lexicon.isValidWordPair(wordPair);
 		
+		// Check to see if word pair is valid
 		if (isValidWordPair != null) {
 			// The word pair isn't valid
+			
+			// Print the invalid words
 			for (String word : isValidWordPair) {
 				System.out.println("\t" + word + " is not a valid word.");
 			}
+			// Don't continue
 			return null;
 		}
 		
-		// Start and end words
+		// Get start and end words from the wordPair array
 		String startWord = wordPair[ParseInput.START_WORD_INDEX].toUpperCase();
 		String endWord = wordPair[ParseInput.END_WORD_INDEX].toUpperCase();
-		
-		// Path starts with start word
-		List<String> startPath = new ArrayList<String>();
-		startPath.add(startWord);
 		
 		// Create two queues: words and path
 		Queue<String> words = new LinkedList<String>();
 		Queue<List<String>> path = new LinkedList<List<String>>();
 		
-		// Create array to keep track of already searched words
+		// Create an array to keep track of already searched words
 		List<String> searched = new ArrayList<String>();
 		
-		words.add(startWord);	// Add startWord to words queue
-		path.add(startPath);	// Add startPath to path queue
+		// Create the origin path containing the start word
+		List<String> originPath = new ArrayList<String>();
+		originPath.add(startWord);
+		
+		words.add(startWord);	// Add startWord to the words queue
+		path.add(originPath);	// Add originPath to the path queue
 		
 		// Loop through the queue until there are no more words
-		while (!words.isEmpty() && !words.peek().equals(endWord)) {
+		while (!words.isEmpty()) {
 			
 			// Poll both of the queues for the a word and its path
 			String currentWord = words.poll();
@@ -69,17 +73,17 @@ public class Dodgson {
 				for (String word : wordsOneOff) {
 					// Check to see if that word is the end word
 					if (word.equals(endWord)) {
+						// If it is, add it to the path and return the path.
 						currentPath.add(word);
-						// Add it to the path and return the path if it is.
 						return currentPath;
 					/* 
 					 * Otherwise, if the word hasn't been searched before,
-					 * add each word and its path to their respective queues
+					 * add it and its path to their respective queues
 					 */
 					} else if (!searched.contains(word)){
 						/* 
 						 * Create a throw-away path List. Do this so that the path for
-						 * each wordOneOff doesn't contain the previous wordOneOff
+						 * each word doesn't contain the previous wordOneOff word
 						 */
 						List<String> tempPath = new ArrayList<String>();
 						for (String wordInPath : currentPath) {
@@ -88,8 +92,8 @@ public class Dodgson {
 						tempPath.add(word); // And add the word to the path
 						
 						/* 
-						 * Add the word to the 'word' queue and 'searched' List,
-						 * and its path to the 'path' queue
+						 * Add the word to the words queue and the searched List.
+						 * Add its path to the path queue.
 						 */
 						words.add(word);
 						path.add(tempPath);

@@ -16,16 +16,21 @@ import java.util.Scanner;
 public class ParseInput {
 
 	/**
-	 * Location of start and end words in the String[] array.
+	 * <code>START_WORD_INDEX</code> - Location of the start word in the word pair <code>String[]</code> array.<br />
+	 * <code>END_WORD_INDEX</code> - Location of the end word in the word pair <code>String[]</code> array.
 	 */
 	public static final int START_WORD_INDEX = 0, END_WORD_INDEX = 1;
 	
 	/**
-	 * HashMap key - Integer value representing word length value - ArrayList
-	 * containing String[] arrays of word pairs
+	 * <h1>HashMap</h1>
+	 * <ul>
+	 * 	<li><strong>Key</strong> - Integer value representing word length.</li>
+	 * 	<li><strong>Value</strong> - <code>ArrayList</code> containing <code>String[]</code> arrays of word pairs.</li>
+	 * </ul>
 	 */
 	private Map<Integer, ArrayList<String[]>> words = new HashMap<Integer, ArrayList<String[]>>();
 
+	
 	public ParseInput() {
 
 	}
@@ -81,7 +86,14 @@ public class ParseInput {
 	 * @return Word pairs in a List of String arrays
 	 */
 	public List<String[]> getWordPairs() {
+		
+		// Create List of String[] arrays to contain all word pairs
 		List<String[]> wordPairs = new ArrayList<String[]>();
+		
+		/* Get the keys (representing word lengths) from the words
+		 * HashMap. For each word length key, get the associated List
+		 * of Strings[] arrays. Add each String[] array to wordPairs.
+		 */
 		for (Integer wordLength : words.keySet()) {
 			List<String[]> singleLengthWordPairs = words.get(wordLength);
 			for (String[] wordPair : singleLengthWordPairs) {
