@@ -69,8 +69,8 @@ public class ParseInput {
 			}
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("Invalid file location");
 		}
 
 	}
