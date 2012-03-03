@@ -18,25 +18,20 @@ public class Assign2 {
 		// ParseInput
 		ParseInput words = new ParseInput(inputFile);
 		List<String[]> wordPairs = words.getWordPairs();
-		System.out.println(words);
-		
 		
 		// Lexicon
 		Lexicon wordList = new Lexicon();
 		wordList.open(wordListFile);
 		wordList.prune(words.getWordLengths());
-		System.out.println(wordList);
 		
 		
 		// Test some lexicon functionality
 		String[] testWords = {"hello", "hell", "apple", "ap", "can", "candle"};
-		System.out.println("Test some lexicon functionality");
 		for (String word : testWords) {
 			String output = "\tWord: " + word;
 				output += "\n\t\tisWord(): " + wordList.isWord(word);
 				output += "\n\t\twordsOneOff(): " + wordList.wordsOneOff(word);
 				output += "\n\t\tisPrefix(): " + wordList.isPrefix(word);
-			System.out.println(output);
 		}
 		
 		
@@ -47,12 +42,19 @@ public class Assign2 {
 		for (String[] wordPair : wordPairs) {
 			
 		// Print the word pair
-		System.out.println("Words: " + Arrays.toString(wordPair));
 			
 			// Find the path
 			List<String> path = dodgson.findPath(wordPair, wordList);
 			if (path != null)
-				System.out.println("\tPath: " + path);
+			{
+				int i=0;
+				while (i < path.size() - 1 )
+				{
+					System.out.print(path.get(i) + ", ");
+					i++;
+				}
+				System.out.println(path.get(i));
+			}
 			else
 				System.out.println("\tNo path exists.");
 			

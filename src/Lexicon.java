@@ -252,7 +252,6 @@ public class Lexicon implements ILexicon {
 		for (int i = 1; i <= str.length(); i++)
 			sb.append(str.subSequence(0, i - 1)).append("[a-z]").append(str.subSequence(i, str.length())).append("|");
 		sb.replace(sb.length() - 1, sb.length(), ")");
-//		System.out.println("Generated regex: " + sb);
 		return sb.toString().toUpperCase();
 	}
 
